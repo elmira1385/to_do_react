@@ -1,3 +1,4 @@
+
 import { create } from 'zustand'
 
 type Todo = {
@@ -9,8 +10,10 @@ type Todo = {
   id:string
   title:string
   }) => void,
-  clearAll:()=>void
-  clearone:(id:string)=>void
+  clearAll:()=>void,
+  clearone:(id:string)=>void,
+  edit:(id:string,newtitle:string)=>void
+
 }
 
 export const usetodo = create<Todo>()((set) => ({
@@ -18,5 +21,6 @@ export const usetodo = create<Todo>()((set) => ({
   setTodo: (newTodo) => set((todos) => ({todo:[...todos.todo,newTodo]})),
   clearAll:()=>set({todo:[]}),
   clearone:(id)=>set((previous)=>({todo:previous.todo.filter((allitem)=>allitem.id !==id)})),
+  edit:(id,newtitle)=>set((previous)=>({todo:previous.todo.map((item)=>item.id===id ?{...item,title:newtitle}:item)}))
 }))
 

@@ -7,8 +7,9 @@ import { usetodo } from './store/useToDo';
 
 function App() {
   const [title, settitle] = useState("")
-  const{todo,setTodo,clearAll,clearone} =usetodo()
+  const{todo,setTodo,clearAll,clearone,edit} =usetodo()
   const [clearb,setclearb]=useState(false)
+  const [editing,setediting]=useState<string|null>(null)
   
   return (
     <div className="flex flex-col h-full justify-center items-center">
@@ -18,7 +19,11 @@ function App() {
         </p>
         <form onSubmit={(e)=>{
           e.preventDefault();
-          setTodo({id:uuidv4(),title:title})
+          if(editing){
+            edit(editing,title)
+            setediting(null)
+          }else{
+          setTodo({id:uuidv4(),title:title})}
           settitle("")
           setclearb(true)
           
@@ -31,7 +36,7 @@ function App() {
             type="text"
           />
           <button  type='submit' className="px-2 py-1 bg-[#a5d5f8] text-[18px] rounded-r-md hover:text-white hover:bg-blue-400 hover:transition-all">
-            submit
+            {editing?"change":"Submit"}
           </button>
         </form>
         <ul className='flex flex-col gap-2'>
@@ -47,7 +52,10 @@ function App() {
 
 
               {/* edit */}
-              <button><svg width="18px" height="18px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <button onClick={()=>{
+                setediting(items.id)
+                settitle(items.title)
+              }}><svg width="18px" height="18px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                <path d="M16.4745 5.40801L18.5917 7.52524M17.8358 3.54289L12.1086 9.27005C11.8131 9.56562 11.6116 9.94206 11.5296 10.3519L11 13L13.6481 12.4704C14.0579 12.3884 14.4344 12.1869 14.7299 11.8914L20.4571 6.16423C21.181 5.44037 21.181 4.26676 20.4571 3.5429C19.7332 2.81904 18.5596 2.81903 17.8358 3.54289Z" stroke="#6be675" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                <path d="M19 15V18C19 19.1046 18.1046 20 17 20H6C4.89543 20 4 19.1046 4 18V7C4 5.89543 4.89543 5 6 5H9" stroke="#6be675" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg></button></div>
